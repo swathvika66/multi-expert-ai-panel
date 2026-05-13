@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Multi-Expert AI Panel — Nagabandi Swathvika</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#080A0F; --bg2:#0E1117; --bg3:#151821;
+    --border:#1E2330; --border2:#2A3040;
+    --text:#E8ECF4; --muted:#6B738A; --muted2:#9AA0B2;
+    --gamer:#00E87A; --gamer-bg:#001F0F; --gamer-dim:#005A28;
+    --topper:#4DA8FF; --topper-bg:#001428; --topper-dim:#1A4A7A;
+    --designer:#FF7A00; --designer-bg:#1A0D00; --designer-dim:#7A3800;
+    --mod:#C9A84C; --mod-bg:#18140A; --mod-dim:#6B5420;
+    --r:12px; --rl:20px;
+  }
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");opacity:.5}
+  .glow{position:fixed;top:-15vh;left:50%;transform:translateX(-50%);width:70vw;height:55vh;pointer-events:none;z-index:0;background:radial-gradient(ellipse,rgba(77,168,255,.05) 0%,rgba(0,232,122,.025) 40%,transparent 70%);filter:blur(60px)}
+  .page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+  /* HEADER */
+  header{padding:52px 0 38px;border-bottom:1px solid var(--border);margin-bottom:36px}
+  .tag{display:inline-flex;align-items:center;gap:8px;background:rgba(77,168,255,.08);border:1px solid rgba(77,168,255,.2);color:var(--topper);border-radius:100px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;margin-bottom:20px}
+  .tag .dot{width:6px;height:6px;border-radius:50%;background:var(--topper);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:14px}
+  .ag{color:var(--gamer)} .at{color:var(--topper)} .ad{color:var(--designer)}
+  .sub{font-size:15px;color:var(--muted2);max-width:540px;line-height:1.65}
+  .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace}
+
+  /* API KEY */
+  .api-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:18px 22px;margin-bottom:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .api-box label{font-size:12px;font-weight:500;color:var(--muted2);font-family:'DM Mono',monospace;white-space:nowrap}
+  .api-box input{flex:1;min-width:220px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 13px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;transition:border-color .2s}
+  .api-box input:focus{border-color:var(--topper)}
+  .api-box input::placeholder{color:var(--muted)}
+  .save-btn{background:var(--topper);color:#000;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+  .save-btn:hover{opacity:.85}
+  .api-ok{font-size:12px;color:var(--gamer);display:none;font-family:'DM Mono',monospace}
+  .api-ok.show{display:block}
+
+  /* TOPICS */
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px}
+  .chip{background:var(--bg3);border:1px solid var(--border2);color:var(--muted2);border-radius:100px;padding:7px 15px;font-size:13px;cursor:pointer;transition:all .2s}
+  .chip:hover,.chip.on{background:rgba(77,168,255,.1);border-color:var(--topper);color:var(--topper)}
+
+  /* QUERY */
+  .qwrap{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:4px 4px 4px 18px;display:flex;gap:10px;align-items:flex-end;margin-bottom:32px;transition:box-shadow .2s}
+  .qwrap:focus-within{box-shadow:0 0 0 3px rgba(77,168,255,.08)}
+  .qwrap textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;line-height:1.6;resize:none;padding:14px 0;min-height:52px;max-height:160px}
+  .qwrap textarea::placeholder{color:var(--muted)}
+  .ask{background:linear-gradient(135deg,#00E87A,#4DA8FF);color:#000;border:none;border-radius:14px;padding:13px 26px;font-size:14px;font-weight:700;font-family:'Syne',sans-serif;letter-spacing:.02em;cursor:pointer;transition:transform .15s,opacity .15s;white-space:nowrap;align-self:flex-end;margin:4px;display:flex;align-items:center;gap:8px}
+  .ask:hover{transform:translateY(-1px);opacity:.9}
+  .ask:active{transform:translateY(0)}
+  .ask:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .ask svg{width:16px;height:16px}
+
+  /* PANEL LABEL */
+  .plabel{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:13px}
+
+  /* EXPERT CARDS */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  @media(max-width:700px){.grid{grid-template-columns:1fr}}
+  .ecard{background:var(--bg2);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;transition:border-color .3s;display:flex;flex-direction:column}
+  .ecard.on-g{border-color:var(--gamer-dim)}
+  .ecard.on-t{border-color:var(--topper-dim)}
+  .ecard.on-d{border-color:var(--designer-dim)}
+  .ehead{padding:15px 17px 13px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--border)}
+  .eico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .ico-g{background:var(--gamer-bg)} .ico-t{background:var(--topper-bg)} .ico-d{background:var(--designer-bg)}
+  .emeta{flex:1;min-width:0}
+  .ename{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:2px}
+  .ng{color:var(--gamer)} .nt{color:var(--topper)} .nd{color:var(--designer)}
+  .erole{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace}
+  .estat{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace}
+  .sdot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:background .3s}
+  .s-thinking .sdot{background:var(--mod);animation:pulse 1s infinite}
+  .s-g .sdot{background:var(--gamer)} .s-t .sdot{background:var(--topper)} .s-d .sdot{background:var(--designer)} .s-mod .sdot{background:var(--mod)}
+  .ebody{flex:1;padding:16px;min-height:140px;font-size:13.5px;line-height:1.75;color:var(--muted2)}
+  .ph{color:var(--muted);font-style:italic;font-size:12.5px}
+  .tanim{display:flex;gap:5px;align-items:center;padding-top:4px}
+  .tanim span{width:7px;height:7px;border-radius:50%;display:block}
+  .dg{background:var(--gamer);animation:bop 1s infinite}
+  .dt{background:var(--topper);animation:bop 1s .18s infinite}
+  .dd{background:var(--designer);animation:bop 1s .36s infinite}
+  @keyframes bop{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .cur{display:inline-block;width:2px;height:1em;background:currentColor;vertical-align:text-bottom;animation:cblink .7s infinite;margin-left:2px}
+  @keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* MODERATOR */
+  .mcard{background:var(--mod-bg);border:1px solid var(--mod-dim);border-radius:var(--rl);overflow:hidden;margin-bottom:30px}
+  .mhead{padding:17px 20px;border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;gap:13px}
+  .mico{width:42px;height:42px;border-radius:11px;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .mtitle{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--mod);margin-bottom:2px}
+  .msub{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace}
+  .mbody{padding:20px;font-size:14.5px;line-height:1.85;color:var(--text);min-height:90px}
+  .mbody .ph{color:var(--muted);font-style:italic;font-size:13px}
+
+  /* HISTORY */
+  .hsec{margin-top:44px}
+  .htitle{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .hcount{background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:2px 10px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+  .hitem{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:9px;cursor:pointer;transition:border-color .2s}
+  .hitem:hover{border-color:var(--border2)}
+  .hq{font-size:13.5px;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ht{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+
+  /* FOOTER */
+  footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--border);text-align:center;font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace;line-height:2}
+  footer a{color:var(--muted2);text-decoration:none}
+  footer a:hover{color:var(--text)}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:100px;padding:9px 20px;font-size:13px;z-index:9999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  ::-webkit-scrollbar{width:5px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="page">
+
+  <header>
+    <div class="tag"><span class="dot"></span>Live Prototype — Multi-Expert AI Panel</div>
+    <h1>Ask once.<br><span class="ag">Three</span> <span class="at">expert</span> <span class="ad">perspectives.</span><br>One clear answer.</h1>
+    <p class="sub">A structured AI panel that routes your question through domain experts and synthesises their advice into one actionable recommendation. Built by Nagabandi Swathvika using the Anthropic Claude API.</p>
+    <div class="meta">
+      <span>⚡ claude-sonnet-4-20250514</span>
+      <span>🔬 Multi-persona JSON orchestration</span>
+      <span>🎓 B.Tech CSE · KITSW Warangal</span>
+    </div>
+  </header>
+
+  <div class="api-box">
+    <label>ANTHROPIC_API_KEY</label>
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-…" autocomplete="off" />
+    <button class="save-btn" onclick="saveKey()">Save Key</button>
+    <span class="api-ok" id="apiOk">✓ Key saved for this session</span>
+  </div>
+
+  <div class="chips">
+    <span class="chip on" onclick="setTopic(this,'study')">🎮 Study + Gaming</span>
+    <span class="chip" onclick="setTopic(this,'career')">💼 Career Decisions</span>
+    <span class="chip" onclick="setTopic(this,'health')">🏃 Health & Fitness</span>
+    <span class="chip" onclick="setTopic(this,'startup')">🚀 Startup Ideas</span>
+    <span class="chip" onclick="setTopic(this,'custom')">✏️ Custom Topic</span>
+  </div>
+
+  <div class="qwrap">
+    <textarea id="q" rows="2" placeholder="How do I stay focused while playing games and also keep up with my studies?" oninput="ar(this)"></textarea>
+    <button class="ask" id="askBtn" onclick="run()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Convene Panel
+    </button>
+  </div>
+
+  <div class="plabel">— Expert panel responses</div>
+
+  <div class="grid">
+    <div class="ecard" id="cg">
+      <div class="ehead">
+        <div class="eico ico-g">🎮</div>
+        <div class="emeta">
+          <div class="ename ng">The Gamer</div>
+          <div class="erole">game strategy · engagement · flow state</div>
+        </div>
+        <div class="estat" id="stg"><span class="sdot"></span><span id="stgt">idle</span></div>
+      </div>
+      <div class="ebody" id="bg"><span class="ph">Waiting for your question…</span></div>
+    </div>
+    <div class="ecard" id="ct">
+      <div class="ehead">
+        <div class="eico ico-t">📚</div>
+        <div class="emeta">
+          <div class="ename nt">The Topper</div>
+          <div class="erole">study techniques · memory · productivity</div>
+        </div>
+        <div class="estat" id="stt"><span class="sdot"></span><span id="sttt">idle</span></div>
+      </div>
+      <div class="ebody" id="bt"><span class="ph">Waiting for your question…</span></div>
+    </div>
+    <div class="ecard" id="cd">
+      <div class="ehead">
+        <div class="eico ico-d">🧠</div>
+        <div class="emeta">
+          <div class="ename nd">The Game Designer</div>
+          <div class="erole">gamification · learning UX · mechanics</div>
+        </div>
+        <div class="estat" id="std"><span class="sdot"></span><span id="stdt">idle</span></div>
+      </div>
+      <div class="ebody" id="bd"><span class="ph">Waiting for your question…</span></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mhead">
+      <div class="mico">⚖️</div>
+      <div style="flex:1">
+        <div class="mtitle">The Moderator</div>
+        <div class="msub">synthesises all three → one clear actionable recommendation</div>
+      </div>
+      <div class="estat" id="stm"><span class="sdot"></span><span id="stmt">idle</span></div>
+    </div>
+    <div class="mbody" id="bm"><span class="ph">The Moderator will synthesise all three expert responses into one clear, balanced recommendation once the panel has spoken.</span></div>
+  </div>
+
+  <div class="hsec" id="hsec" style="display:none">
+    <div class="htitle">Previous questions <span class="hcount" id="hcnt">0</span></div>
+    <div id="hlist"></div>
+  </div>
+
+  <footer>
+    <div>Multi-Expert AI Panel · Built by <strong>Nagabandi Swathvika</strong> · B.Tech CSE 1st Year, KITSW Warangal</div>
+    <div>Powered by <a href="https://anthropic.com" target="_blank">Anthropic Claude API</a> · <a href="https://github.com/NagabandiSwathvika/multi-expert-ai-panel" target="_blank">GitHub</a></div>
+    <div style="margin-top:6px;font-size:11px;color:var(--muted)">API key stored in sessionStorage only — never transmitted anywhere except Anthropic's servers.</div>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOPICS = {
+  study:"How do I stay focused while playing games and also keep up with my studies?",
+  career:"Should I take the high-paying corporate job or join an early-stage startup?",
+  health:"How do I build a consistent workout habit when I have zero motivation after classes?",
+  startup:"I have a working AI prototype. What's the fastest way to validate it as a business?",
+  custom:"Type any question — the panel will figure out the right expert perspectives for it."
+};
+const SYS = {
+  gamer:`You are "The Gamer" — a world-class expert in game strategy, player psychology, engagement mechanics, and flow states. Speak from deep personal gaming experience. Be direct, practical, and specific. Use gaming analogies naturally. Under 180 words. Start answering immediately — no preamble.`,
+  topper:`You are "The Topper" — a consistently high-achieving student with a tested toolkit of study techniques, memory science, and academic productivity. Be structured, evidence-grounded, and immediately actionable. Under 180 words. Start answering immediately — no preamble.`,
+  designer:`You are "The Game Designer" — a specialist in educational game mechanics, learning UX, gamification, and cognitive science of play. Think in motivation systems, feedback loops, and reward structures. Be concrete and inventive. Under 180 words. Start answering immediately — no preamble.`
+};
+const hist=[];
+let busy=false;
+
+function getKey(){return sessionStorage.getItem('apk')||''}
+function saveKey(){
+  const v=document.getElementById('apiKey').value.trim();
+  if(!v){toast('Please enter your API key');return}
+  sessionStorage.setItem('apk',v);
+  document.getElementById('apiKey').value='••••••••••••••••••••••';
+  document.getElementById('apiOk').classList.add('show');
+  toast('✓ Key saved for this session');
+}
+function setTopic(el,k){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('q').placeholder=TOPICS[k];
+}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px'}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+
+function setS(id,cls,lbl){
+  const el=document.getElementById('st'+id);
+  if(el){el.className='estat '+cls;el.querySelector('.sdot').className='sdot'}
+  // re-apply sdot class based on state
+  const dot=el?el.querySelector('.sdot'):null;
+  if(dot){
+    if(cls==='s-thinking'){dot.style.background='var(--mod)';dot.style.animation='pulse 1s infinite'}
+    else if(cls==='s-g'){dot.style.background='var(--gamer)';dot.style.animation='none'}
+    else if(cls==='s-t'){dot.style.background='var(--topper)';dot.style.animation='none'}
+    else if(cls==='s-d'){dot.style.background='var(--designer)';dot.style.animation='none'}
+    else if(cls==='s-mod'){dot.style.background='var(--mod)';dot.style.animation='none'}
+    else{dot.style.background='var(--border2)';dot.style.animation='none'}
+  }
+  const lel=document.getElementById('st'+id+'t');
+  if(lel)lel.textContent=lbl;
+}
+function setB(id,html){document.getElementById('b'+id).innerHTML=html}
+function thinking(c1,c2){return`<div class="tanim"><span class="${c1}"></span><span class="${c2}" style="animation-delay:.18s"></span><span class="${c1}" style="animation-delay:.36s"></span></div>`}
+
+async function callAPI(sys,msg,onChunk){
+  const key=getKey();
+  if(!key)throw new Error('No API key set — please enter your key above.');
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:450,
+      stream:true,
+      system:sys,
+      messages:[{role:'user',content:msg}]
+    })
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`API error ${r.status}`)}
+  const reader=r.body.getReader();
+  const dec=new TextDecoder();
+  let full='';
+  while(true){
+    const{value,done}=await reader.read();
+    if(done)break;
+    for(const line of dec.decode(value).split('\n')){
+      if(!line.startsWith('data: '))continue;
+      try{
+        const d=JSON.parse(line.slice(6));
+        if(d.type==='content_block_delta'&&d.delta?.text){
+          full+=d.delta.text;
+          onChunk(full);
+        }
+      }catch{}
+    }
+  }
+  return full;
+}
+
+async function run(){
+  if(busy)return;
+  const q=document.getElementById('q').value.trim();
+  if(!q){toast('Please enter a question first');return}
+  if(!getKey()){toast('Please enter your Anthropic API key above');return}
+  busy=true;
+  const btn=document.getElementById('askBtn');
+  btn.disabled=true;
+  btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Convening…`;
+
+  // Reset
+  document.getElementById('cg').className='ecard';
+  document.getElementById('ct').className='ecard';
+  document.getElementById('cd').className='ecard';
+  ['g','t','d','m'].forEach(id=>{setS(id,'','idle');setB(id,'<span class="ph">Waiting…</span>')});
+
+  const pairs=[
+    {id:'g',cardId:'cg',cls:'on-g',scls:'s-g',sys:SYS.gamer},
+    {id:'t',cardId:'ct',cls:'on-t',scls:'s-t',sys:SYS.topper},
+    {id:'d',cardId:'cd',cls:'on-d',scls:'s-d',sys:SYS.designer}
+  ];
+  const dotMap={g:['dg','dt'],t:['dt','dg'],d:['dd','dg']};
+
+  pairs.forEach(p=>{
+    setS(p.id,'s-thinking','thinking…');
+    setB(p.id,thinking(...dotMap[p.id]));
+    document.getElementById(p.cardId).classList.add(p.cls);
+  });
+
+  const res={};
+  try{
+    await Promise.all(pairs.map(p=>
+      callAPI(p.sys,q,partial=>{
+        setB(p.id,partial+'<span class="cur"></span>');
+      }).then(full=>{
+        res[p.id]=full;
+        setB(p.id,full);
+        setS(p.id,p.scls,'done ✓');
+      })
+    ));
+
+    setS('m','s-thinking','synthesising…');
+    setB('m',thinking('dt','dg'));
+
+    const modSys=`You are the Moderator of a three-expert AI panel. Read all three expert responses and synthesise them into ONE unified, actionable recommendation. Do not list or summarise each expert separately. Write 3–5 flowing paragraphs the user can immediately act on. Start directly with the recommendation. Under 300 words.`;
+    const modMsg=`QUESTION: ${q}\n\nTHE GAMER said:\n${res.g}\n\nTHE TOPPER said:\n${res.t}\n\nTHE GAME DESIGNER said:\n${res.d}\n\nSynthesise these into one clear, actionable recommendation.`;
+
+    const modFull=await callAPI(modSys,modMsg,partial=>{
+      setB('m',partial+'<span class="cur"></span>');
+    });
+    setB('m',modFull);
+    setS('m','s-mod','done ✓');
+
+    hist.unshift({q,time:new Date().toLocaleTimeString(),res,mod:modFull});
+    renderHist();
+    toast('✓ Panel complete');
+  }catch(e){
+    toast('Error: '+e.message);
+    ['g','t','d','m'].forEach(id=>setB(id,`<span style="color:#FF6B6B;font-size:13px">Error: ${e.message}</span>`));
+  }
+  busy=false;
+  btn.disabled=false;
+  btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Convene Panel`;
+}
+
+function renderHist(){
+  const sec=document.getElementById('hsec');
+  const list=document.getElementById('hlist');
+  const cnt=document.getElementById('hcnt');
+  if(!hist.length){sec.style.display='none';return}
+  sec.style.display='block';
+  cnt.textContent=hist.length;
+  list.innerHTML=hist.map((h,i)=>`<div class="hitem" onclick="loadH(${i})"><div class="hq">${h.q}</div><div class="ht">${h.time}</div></div>`).join('');
+}
+function loadH(i){
+  const h=hist[i];
+  document.getElementById('q').value=h.q;
+  if(h.res){
+    [{id:'g',cls:'on-g',scls:'s-g'},{id:'t',cls:'on-t',scls:'s-t'},{id:'d',cls:'on-d',scls:'s-d'}].forEach(p=>{
+      document.getElementById('c'+p.id).className='ecard '+p.cls;
+      setB(p.id,h.res[p.id]||'');
+      setS(p.id,p.scls,'done ✓');
+    });
+    setB('m',h.mod||'');
+    setS('m','s-mod','done ✓');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('q').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run()});
+if(getKey()){document.getElementById('apiKey').value='••••••••••••••••••••••';document.getElementById('apiOk').classList.add('show')}
+</script>
+</body>
+</html>
